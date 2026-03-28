@@ -168,6 +168,18 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/p2')
   })
 
+  it('strips numeric list prefixes without following space', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list-no-space.txt')
+    writeFileSync(txtPath, '1)https://pan.quark.cn/s/ns1\n2.https://pan.baidu.com/s/ns2\n', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/ns1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/ns2')
+  })
+
   it('parses csv with UTF-8 BOM header into data rows', () => {
     const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
     const csvPath = join(dir, 'bom-list.csv')
