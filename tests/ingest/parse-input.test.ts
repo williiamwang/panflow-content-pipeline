@@ -16,6 +16,13 @@ describe('parseInput', () => {
     expect(out).toHaveLength(2)
   })
 
+  it('parses CR-only inline multi-line input as multiple items', () => {
+    const out = parseInput('https://pan.quark.cn/s/r-inline-1\rhttps://pan.baidu.com/s/r-inline-2')
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/r-inline-1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/r-inline-2')
+  })
+
   it('marks xlsx source platform as other import source', () => {
     const out = parseInput('input/list.xlsx')
     expect(out[0].source_platform).toBe('other')

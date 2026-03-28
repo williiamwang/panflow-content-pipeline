@@ -58,7 +58,7 @@ export function parseInput(input: string): ItemInput[] {
     return parseLinesToItems(text, batchId)
   }
 
-  if (trimmed.includes('\n')) {
+  if (/\r\n|\n|\r/.test(trimmed)) {
     return parseLinesToItems(trimmed, batchId)
   }
 
