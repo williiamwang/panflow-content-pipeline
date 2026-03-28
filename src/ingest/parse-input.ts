@@ -28,8 +28,11 @@ function parseCsvToItems(csvText: string, batchId: string): ItemInput[] {
 
   const firstColumn = (line: string): string => line.split(',')[0]?.trim() ?? ''
   const dataLines = firstColumn(lines[0] ?? '').toLowerCase() === 'source_link' ? lines.slice(1) : lines
+  const filteredDataLines = dataLines.filter(
+    (line) => !line.startsWith('#') && !line.startsWith('//') && !line.startsWith(';'),
+  )
 
-  return dataLines.map((line) => normalizeItem(firstColumn(line), batchId))
+  return filteredDataLines.map((line) => normalizeItem(firstColumn(line), batchId))
 }
 
 export function parseInput(input: string): ItemInput[] {

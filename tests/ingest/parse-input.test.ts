@@ -148,4 +148,20 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/c1')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/c2')
   })
+
+  it('ignores comment-like rows in csv content', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'csv-comments.csv')
+    writeFileSync(
+      csvPath,
+      'source_link\n# comment\n// comment\n; comment\nhttps://pan.quark.cn/s/z1\nhttps://pan.baidu.com/s/z2\n',
+      'utf8',
+    )
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/z1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/z2')
+  })
 })
