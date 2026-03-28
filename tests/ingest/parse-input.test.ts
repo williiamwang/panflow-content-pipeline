@@ -39,4 +39,16 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/a')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/b')
   })
+
+  it('parses txt file content into multiple items', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list.txt')
+    writeFileSync(txtPath, 'https://pan.quark.cn/s/t1\nhttps://pan.baidu.com/s/t2\n', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/t1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/t2')
+  })
 })

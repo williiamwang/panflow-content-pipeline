@@ -21,6 +21,12 @@ export function buildReport(rows: ReportRow[]): ReportData {
   }
 }
 
+function csvEscape(value: string | number): string {
+  const text = String(value)
+  const escaped = text.replaceAll('"', '""')
+  return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped
+}
+
 export function buildReportArtifacts(report: ReportData): {
   json: string
   csv: string
@@ -31,7 +37,7 @@ export function buildReportArtifacts(report: ReportData): {
   const csvHeader = 'source_link,status,retries,errors'
   const csvRows = report.items.map((item) => {
     const errors = item.errors.join('|')
-    return `${item.source_link},${item.status},${item.retries},${errors}`
+    return [item.source_link, item.status, item.retries, errors].map(csvEscape).join(',')
   })
   const csv = [csvHeader, ...csvRows].join('\n')
 

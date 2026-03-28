@@ -34,6 +34,11 @@ export function parseInput(input: string): ItemInput[] {
     return parseCsvToItems(csvText, batchId)
   }
 
+  if (trimmed.endsWith('.txt') && existsSync(trimmed)) {
+    const text = readFileSync(trimmed, 'utf8')
+    return parseLinesToItems(text, batchId)
+  }
+
   if (trimmed.includes('\n')) {
     return parseLinesToItems(trimmed, batchId)
   }
