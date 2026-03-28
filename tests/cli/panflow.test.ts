@@ -7,4 +7,11 @@ describe('panflow cli', () => {
     expect(out.length).toBe(1)
     expect(out[0].status).toBe('done')
   })
+
+  it('supports dry-run mode and marks fill as skipped', async () => {
+    const out = await runPanflowCli({ input: 'https://pan.quark.cn/s/old4', dryRun: true })
+    expect(out[0].fill_result.xiaohongshu).toBe('skipped')
+    expect(out[0].fill_result.wechat).toBe('skipped')
+    expect(out[0].fill_result.xianyu).toBe('skipped')
+  })
 })

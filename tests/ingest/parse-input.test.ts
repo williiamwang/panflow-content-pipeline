@@ -13,9 +13,15 @@ describe('parseInput', () => {
     expect(out).toHaveLength(2)
   })
 
-  it('treats csv/xlsx path as import source marker', () => {
+  it('marks xlsx source platform as other import source', () => {
     const out = parseInput('input/list.xlsx')
-    expect(out[0].source_platform).toBe('auto')
-    expect(out[0].batch_id.length).toBeGreaterThan(0)
+    expect(out[0].source_platform).toBe('other')
+    expect(out[0].source_link).toBe('input/list.xlsx')
+  })
+
+  it('marks csv source platform as other import source', () => {
+    const out = parseInput('input/list.csv')
+    expect(out[0].source_platform).toBe('other')
+    expect(out[0].source_link).toBe('input/list.csv')
   })
 })

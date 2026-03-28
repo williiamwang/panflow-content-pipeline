@@ -1,14 +1,16 @@
-type ReportRow = {
+export type ReportRow = {
   source_link: string
   status: 'done' | 'partial' | 'failed'
   retries: number
   errors: string[]
 }
 
-export function buildReport(rows: ReportRow[]): {
+export type ReportData = {
   summary: { done: number; partial: number; failed: number }
   items: ReportRow[]
-} {
+}
+
+export function buildReport(rows: ReportRow[]): ReportData {
   return {
     summary: {
       done: rows.filter((x) => x.status === 'done').length,
@@ -17,4 +19,28 @@ export function buildReport(rows: ReportRow[]): {
     },
     items: rows,
   }
+}
+
+export function buildReportArtifacts(report: ReportData): {
+  json: string
+  csv: string
+  markdown: string
+} {
+  const json = JSON.stringify(report, null, 2)
+
+  const csvHeader = 'source_link,status,retries,errors'
+  const csvRows = report.items.map((item) => {
+    const errors = item.errors.join('|')
+    return `${item.source_link},${item.status},${item.retries},${errors}`
+  })
+  const csv = [csvHeader, ...csvRows].join('\n')
+
+  const markdownHeader = '| source_link | status | retries | errors |'
+  const markdownSep = '| --- | --- | --- | --- |'
+  const markdownRows = report.items.map(
+    (item) => `| ${item.source_link} | ${item.status} | ${item.retries} | ${item.errors.join(',')} |`,
+  )
+  const markdown = [markdownHeader, markdownSep, ...markdownRows].join('\n')
+
+  return { json, csv, markdown }
 }
