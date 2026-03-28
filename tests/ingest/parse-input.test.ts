@@ -100,4 +100,28 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/m2')
     expect(out[2].source_link).toBe('https://pan.quark.cn/s/m3')
   })
+
+  it('parses csv with UTF-8 BOM header into data rows', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'bom-list.csv')
+    writeFileSync(csvPath, '\ufeffsource_link\nhttps://pan.quark.cn/s/b1\nhttps://pan.baidu.com/s/b2\n', 'utf8')
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/b1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/b2')
+  })
+
+  it('parses first column as source_link in multi-column csv', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'multi-col.csv')
+    writeFileSync(csvPath, 'source_link,note\nhttps://pan.quark.cn/s/c1,first\nhttps://pan.baidu.com/s/c2,second\n', 'utf8')
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/c1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/c2')
+  })
 })
