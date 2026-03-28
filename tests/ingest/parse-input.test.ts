@@ -75,4 +75,16 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/s1')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/s2')
   })
+
+  it('ignores semicolon comment lines in txt file', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list.txt')
+    writeFileSync(txtPath, '; comment\nhttps://pan.quark.cn/s/c1\n; another\nhttps://pan.baidu.com/s/c2\n', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/c1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/c2')
+  })
 })
