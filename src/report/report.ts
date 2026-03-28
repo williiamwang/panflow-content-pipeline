@@ -28,7 +28,7 @@ function csvEscape(value: string | number): string {
 }
 
 function markdownEscape(value: string | number): string {
-  return String(value).replaceAll('|', '\\|')
+  return String(value).replaceAll('|', '\\|').replaceAll('\n', '<br/>')
 }
 
 export function buildReportArtifacts(report: ReportData): {

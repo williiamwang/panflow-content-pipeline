@@ -10,7 +10,7 @@ function parseLinesToItems(text: string, batchId: string): ItemInput[] {
   return text
     .split('\n')
     .map((line) => line.trim())
-    .filter((line) => Boolean(line) && !line.startsWith('#'))
+    .filter((line) => Boolean(line) && !line.startsWith('#') && !line.startsWith('//'))
     .map((line) => normalizeItem(line, batchId))
 }
 

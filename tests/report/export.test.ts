@@ -46,4 +46,20 @@ describe('report exports', () => {
     expect(artifacts.markdown).toContain('https://pan.quark.cn/s/a\\|b')
     expect(artifacts.markdown).toContain('bad\\|err')
   })
+
+  it('replaces markdown newlines with html break', () => {
+    const report = buildReport([
+      {
+        source_link: 'https://pan.quark.cn/s/a\nhttps://pan.baidu.com/s/b',
+        status: 'partial',
+        retries: 1,
+        errors: ['line1\nline2'],
+      },
+    ])
+
+    const artifacts = buildReportArtifacts(report)
+
+    expect(artifacts.markdown).toContain('https://pan.quark.cn/s/a<br/>https://pan.baidu.com/s/b')
+    expect(artifacts.markdown).toContain('line1<br/>line2')
+  })
 })
