@@ -37,9 +37,12 @@ function parseCsvToItems(csvText: string, batchId: string): ItemInput[] {
     return trimmedLine.split(',')[0]?.trim() ?? ''
   }
   const dataLines = firstColumn(lines[0] ?? '').toLowerCase() === 'source_link' ? lines.slice(1) : lines
-  const filteredDataLines = dataLines.filter(
-    (line) => !line.startsWith('#') && !line.startsWith('//') && !line.startsWith(';'),
-  )
+  const filteredDataLines = dataLines.filter((line) => {
+    if (line.startsWith('#') || line.startsWith('//') || line.startsWith(';')) {
+      return false
+    }
+    return Boolean(firstColumn(line))
+  })
 
   return filteredDataLines.map((line) => normalizeItem(firstColumn(line), batchId))
 }

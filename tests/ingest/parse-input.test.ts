@@ -199,4 +199,20 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/a,b')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/c,d')
   })
+
+  it('ignores rows with empty first csv column', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'csv-empty-first-column.csv')
+    writeFileSync(
+      csvPath,
+      'source_link,note\n,missing-link\n"",also-missing\nhttps://pan.quark.cn/s/e1,ok\nhttps://pan.baidu.com/s/e2,ok\n',
+      'utf8',
+    )
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/e1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/e2')
+  })
 })
