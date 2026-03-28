@@ -164,4 +164,20 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/z1')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/z2')
   })
+
+  it('parses quoted first csv column containing comma', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'csv-quoted-first-column.csv')
+    writeFileSync(
+      csvPath,
+      'source_link,note\n"https://pan.quark.cn/s/a,b",first\n"https://pan.baidu.com/s/c,d",second\n',
+      'utf8',
+    )
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/a,b')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/c,d')
+  })
 })

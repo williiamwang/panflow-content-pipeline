@@ -26,7 +26,16 @@ function parseCsvToItems(csvText: string, batchId: string): ItemInput[] {
     .filter(Boolean)
     .map((line) => line.replace(/^\uFEFF/, ''))
 
-  const firstColumn = (line: string): string => line.split(',')[0]?.trim() ?? ''
+  const firstColumn = (line: string): string => {
+    const trimmedLine = line.trim()
+    if (trimmedLine.startsWith('"')) {
+      const match = trimmedLine.match(/^"((?:[^"]|"")*)"/)
+      if (match) {
+        return match[1].replaceAll('""', '"').trim()
+      }
+    }
+    return trimmedLine.split(',')[0]?.trim() ?? ''
+  }
   const dataLines = firstColumn(lines[0] ?? '').toLowerCase() === 'source_link' ? lines.slice(1) : lines
   const filteredDataLines = dataLines.filter(
     (line) => !line.startsWith('#') && !line.startsWith('//') && !line.startsWith(';'),
