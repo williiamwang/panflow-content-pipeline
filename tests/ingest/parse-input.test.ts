@@ -192,6 +192,18 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/b2')
   })
 
+  it('parses csv with custom header as source_link', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'custom-header.csv')
+    writeFileSync(csvPath, 'url,note\nhttps://pan.quark.cn/s/ch1\nhttps://pan.baidu.com/s/ch2\n', 'utf8')
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/ch1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/ch2')
+  })
+
   it('parses first column as source_link in multi-column csv', () => {
     const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
     const csvPath = join(dir, 'multi-col.csv')
