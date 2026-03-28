@@ -87,4 +87,17 @@ describe('parseInput', () => {
     expect(out[0].source_link).toBe('https://pan.quark.cn/s/c1')
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/c2')
   })
+
+  it('strips markdown list prefixes from txt links', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list.txt')
+    writeFileSync(txtPath, '- https://pan.quark.cn/s/m1\n* https://pan.baidu.com/s/m2\n1. https://pan.quark.cn/s/m3\n', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(3)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/m1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/m2')
+    expect(out[2].source_link).toBe('https://pan.quark.cn/s/m3')
+  })
 })

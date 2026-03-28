@@ -22,7 +22,7 @@ export function buildReport(rows: ReportRow[]): ReportData {
 }
 
 function csvEscape(value: string | number): string {
-  const text = String(value)
+  const text = String(value).replaceAll('\r\n', '\n').replaceAll('\r', '\n')
   const escaped = text.replaceAll('"', '""')
   return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped
 }

@@ -6,11 +6,16 @@ function makeBatchId(): string {
   return `batch-${Date.now()}`
 }
 
+function stripListPrefix(line: string): string {
+  return line.replace(/^[-*]\s+/, '').replace(/^\d+\.\s+/, '')
+}
+
 function parseLinesToItems(text: string, batchId: string): ItemInput[] {
   return text
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => Boolean(line) && !line.startsWith('#') && !line.startsWith('//') && !line.startsWith(';'))
+    .map((line) => stripListPrefix(line))
     .map((line) => normalizeItem(line, batchId))
 }
 

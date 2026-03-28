@@ -78,4 +78,21 @@ describe('report exports', () => {
     expect(artifacts.markdown).toContain('https://pan.quark.cn/s/a<br/>https://pan.baidu.com/s/b')
     expect(artifacts.markdown).toContain('line1<br/>line2')
   })
+
+  it('normalizes CRLF in csv export values', () => {
+    const report = buildReport([
+      {
+        source_link: 'https://pan.quark.cn/s/a\r\nhttps://pan.baidu.com/s/b',
+        status: 'partial',
+        retries: 1,
+        errors: ['line1\r\nline2'],
+      },
+    ])
+
+    const artifacts = buildReportArtifacts(report)
+
+    expect(artifacts.csv).toContain('"https://pan.quark.cn/s/a\nhttps://pan.baidu.com/s/b"')
+    expect(artifacts.csv).toContain('"line1\nline2"')
+    expect(artifacts.csv.includes('\r')).toBe(false)
+  })
 })
