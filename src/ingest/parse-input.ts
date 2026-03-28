@@ -12,7 +12,7 @@ function stripListPrefix(line: string): string {
 
 function parseLinesToItems(text: string, batchId: string): ItemInput[] {
   return text
-    .split('\n')
+    .split(/\r\n|\n|\r/)
     .map((line) => line.trim())
     .filter((line) => Boolean(line) && !line.startsWith('#') && !line.startsWith('//') && !line.startsWith(';'))
     .map((line) => stripListPrefix(line))

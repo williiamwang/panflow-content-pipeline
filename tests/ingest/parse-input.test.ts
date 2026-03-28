@@ -52,6 +52,18 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/t2')
   })
 
+  it('parses txt file with CR-only newlines into multiple items', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list-cr.txt')
+    writeFileSync(txtPath, 'https://pan.quark.cn/s/r1\rhttps://pan.baidu.com/s/r2\r', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/r1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/r2')
+  })
+
   it('ignores blank lines and comment lines in txt file', () => {
     const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
     const txtPath = join(dir, 'list.txt')
