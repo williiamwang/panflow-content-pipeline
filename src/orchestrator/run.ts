@@ -7,7 +7,7 @@ import { generateXhsImage } from '../image/generate-xhs'
 import { generateWechatImage } from '../image/generate-wechat'
 import { generateXianyuImage } from '../image/generate-xianyu'
 import { buildDraftPayload } from '../fill/fill'
-import { getBySourceLink } from '../runtime/db'
+import { getBySourceLink, getRuntimeDb } from '../runtime/db'
 import { checkpoint } from '../runtime/checkpoint'
 
 function pickAdapter(link: string) {
@@ -18,9 +18,10 @@ function pickAdapter(link: string) {
 
 export async function runPipeline(items: ItemInput[]): Promise<ItemOutput[]> {
   const out: ItemOutput[] = []
+  const runtimeDb = await getRuntimeDb(':memory:')
 
   for (const item of items) {
-    const cached = getBySourceLink(item.source_link)
+    const cached = getBySourceLink(runtimeDb, item.source_link)
 
     let newShareLink = cached?.new_share_link
 
@@ -32,7 +33,7 @@ export async function runPipeline(items: ItemInput[]): Promise<ItemOutput[]> {
         2,
       )
       newShareLink = await adapter.createShareLink({ resourceId: saved.resourceId })
-      checkpoint(item.source_link, newShareLink)
+      checkpoint(runtimeDb, item.source_link, newShareLink)
     }
 
     const title = item.source_copy ?? '资源合集'

@@ -6,9 +6,9 @@ describe('contracts', () => {
   it('validates item input schema', () => {
     const parsed = ItemInputSchema.parse({
       source_link: 'https://pan.quark.cn/s/abc123',
-      source_copy: '示例文案',
+      source_copy: '',
       source_platform: 'auto',
-      tags: ['资源', '教程'],
+      tags: ['', ''],
       batch_id: 'batch-1',
     })
 
