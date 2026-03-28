@@ -47,6 +47,18 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/b')
   })
 
+  it('parses csv file with CR-only newlines into multiple items', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const csvPath = join(dir, 'list-cr.csv')
+    writeFileSync(csvPath, 'source_link\rhttps://pan.quark.cn/s/cr1\rhttps://pan.baidu.com/s/cr2\r', 'utf8')
+
+    const out = parseInput(csvPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/cr1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/cr2')
+  })
+
   it('parses txt file content into multiple items', () => {
     const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
     const txtPath = join(dir, 'list.txt')

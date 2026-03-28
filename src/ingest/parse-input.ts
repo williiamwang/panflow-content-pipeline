@@ -21,7 +21,7 @@ function parseLinesToItems(text: string, batchId: string): ItemInput[] {
 
 function parseCsvToItems(csvText: string, batchId: string): ItemInput[] {
   const lines = csvText
-    .split('\n')
+    .split(/\r\n|\n|\r/)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => line.replace(/^\uFEFF/, ''))
