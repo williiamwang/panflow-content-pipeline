@@ -144,6 +144,18 @@ describe('parseInput', () => {
     expect(out[1].source_link).toBe('https://pan.baidu.com/s/pplus2')
   })
 
+  it('strips unicode bullet list prefixes from txt links', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
+    const txtPath = join(dir, 'list-bullet.txt')
+    writeFileSync(txtPath, '• https://pan.quark.cn/s/bullet1\n• https://pan.baidu.com/s/bullet2\n', 'utf8')
+
+    const out = parseInput(txtPath)
+
+    expect(out).toHaveLength(2)
+    expect(out[0].source_link).toBe('https://pan.quark.cn/s/bullet1')
+    expect(out[1].source_link).toBe('https://pan.baidu.com/s/bullet2')
+  })
+
   it('strips parenthesized numeric list prefixes from txt links', () => {
     const dir = mkdtempSync(join(tmpdir(), 'panflow-parse-'))
     const txtPath = join(dir, 'list-parenthesized.txt')
