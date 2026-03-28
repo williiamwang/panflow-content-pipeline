@@ -7,7 +7,7 @@ function makeBatchId(): string {
 }
 
 function stripListPrefix(line: string): string {
-  return line.replace(/^[-*]\s+/, '').replace(/^\d+\.\s+/, '').replace(/^\d+\)\s+/, '')
+  return line.replace(/^[-*+]\s+/, '').replace(/^\d+\.\s+/, '').replace(/^\d+\)\s+/, '')
 }
 
 function parseLinesToItems(text: string, batchId: string): ItemInput[] {
