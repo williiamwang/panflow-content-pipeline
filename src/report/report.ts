@@ -27,6 +27,10 @@ function csvEscape(value: string | number): string {
   return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped
 }
 
+function markdownEscape(value: string | number): string {
+  return String(value).replaceAll('|', '\\|')
+}
+
 export function buildReportArtifacts(report: ReportData): {
   json: string
   csv: string
@@ -44,7 +48,8 @@ export function buildReportArtifacts(report: ReportData): {
   const markdownHeader = '| source_link | status | retries | errors |'
   const markdownSep = '| --- | --- | --- | --- |'
   const markdownRows = report.items.map(
-    (item) => `| ${item.source_link} | ${item.status} | ${item.retries} | ${item.errors.join(',')} |`,
+    (item) =>
+      `| ${markdownEscape(item.source_link)} | ${markdownEscape(item.status)} | ${markdownEscape(item.retries)} | ${markdownEscape(item.errors.join(','))} |`,
   )
   const markdown = [markdownHeader, markdownSep, ...markdownRows].join('\n')
 

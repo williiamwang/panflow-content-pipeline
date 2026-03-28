@@ -30,4 +30,20 @@ describe('report exports', () => {
     expect(artifacts.csv).toContain('"https://pan.quark.cn/s/a,b"')
     expect(artifacts.csv).toContain('"bad ""quote""|a,b"')
   })
+
+  it('escapes markdown table separator in values', () => {
+    const report = buildReport([
+      {
+        source_link: 'https://pan.quark.cn/s/a|b',
+        status: 'partial',
+        retries: 1,
+        errors: ['bad|err'],
+      },
+    ])
+
+    const artifacts = buildReportArtifacts(report)
+
+    expect(artifacts.markdown).toContain('https://pan.quark.cn/s/a\\|b')
+    expect(artifacts.markdown).toContain('bad\\|err')
+  })
 })
